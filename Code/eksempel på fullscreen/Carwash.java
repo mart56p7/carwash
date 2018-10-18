@@ -236,3 +236,4 @@ class InfoScreen extends JPanel
 		this.add(button);
 	}
 }
+//virker//
