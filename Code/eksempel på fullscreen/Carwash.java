@@ -7,6 +7,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.*;
 
+// Hej
+
 public class Carwash
 {
 	public static void main(String[] args)
@@ -234,3 +236,4 @@ class InfoScreen extends JPanel
 		this.add(button);
 	}
 }
+//virker//
