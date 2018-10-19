@@ -1,3 +1,17 @@
+enum Operation{
+    STANDARD_WASH,
+    EARLY_STANDARD_WASH,
+    ECONOMY_WASH,
+    EARLY_ECONOMY_WASH,
+    DELUX_WASH,
+    ABORT,
+    RECHARGE,
+    INSERT_CARD,
+    RECEIPT,
+    NO_RECEIPT,
+    START_WASH
+}
+
 class WashHallManager
 {
    WashHallGUI gui;
