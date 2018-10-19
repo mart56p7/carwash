@@ -63,12 +63,12 @@ public class WashTypeEarlyBirdMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.RECEIPT);
+               gui.runCommand(Operation.DELUX_WASH);
             }
          });		
       this.add(button1);
       
-      String buttonlabel2 = "Early Bird Special 64 kr";
+      String buttonlabel2 = "Early Bird Standard 64 kr";
       JButton button2=new JButton(buttonlabel2); 
       button2.setFont(gui.getFontBig());
       button2.setBounds(10, 230, gui.getWidth()-20,50);  
@@ -77,7 +77,7 @@ public class WashTypeEarlyBirdMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.RECEIPT);
+               gui.runCommand(Operation.EARLY_STANDARD_WASH);
             }
          });		
       this.add(button2);	  
@@ -91,7 +91,7 @@ public class WashTypeEarlyBirdMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.RECEIPT);
+               gui.runCommand(Operation.EARLY_ECONOMY_WASH);
             }
          });		
       this.add(button3);	              
