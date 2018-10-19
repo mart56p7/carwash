@@ -39,7 +39,7 @@ public class InsertCardScreen extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.INSERT_CARD);
+               gui.runCommand(Operation.CARD_INSERTED);
             }
          });		
       this.add(simbutton);	  

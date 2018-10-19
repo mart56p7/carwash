@@ -6,7 +6,7 @@ enum Operation{
    DELUX_WASH,
    ABORT,
    RECHARGE,
-   INSERT_CARD,
+   CARD_INSERTED,
    RECEIPT,
    NO_RECEIPT,
    START_WASH
@@ -14,68 +14,98 @@ enum Operation{
 
 class WashHallManager
 {
-   WashHallGUI gui;
+    WashHallGUI gui;
+    WashType economyWash = new WashType("economy", 50);
+    WashType standardWash = new WashType("standard", 80);
+    WashType deluxWash = new WashType("delux", 120);
+    WashType earlyStandardWash = new WashType("earlyStandardWash", 40);
+    WashType earlyEconomyWash = new WashType("earlyEconomyWash", 64);
+    
+    Account currentAccount = null;
    
    public WashHallManager(WashHallGUI _gui)
    {
       gui = _gui;
    }
    
-   public int runCommand(Operation o)
+   public DisplayType runCommand(Operation o)
    {
-      int returnDisplay = 0;
+      DisplayType returnDisplay = DisplayType.INSERT_CARD_SCREEN;
       switch(o) {
          case STANDARD_WASH:
             System.out.println("standard wash");
-            returnDisplay = 3;
+	    buyWash(standardWash);
+            returnDisplay = DisplayType.RECEIPT_MENU;
             break;
          case ECONOMY_WASH:
             System.out.println("ECONOMY wash");
-            returnDisplay = 3;
+	    buyWash(economyWash);
+            returnDisplay = DisplayType.RECEIPT_MENU;
             break;
          case DELUX_WASH:
             System.out.println("DELUX wash");
-            returnDisplay = 3;
+	    buyWash(deluxWash);
+            returnDisplay = DisplayType.RECEIPT_MENU;
             break;
          case EARLY_STANDARD_WASH:
             System.out.println("EARLYSTANDARD wash");
-            returnDisplay = 3;
+	    buyWash(earlyStandardWash);
+            returnDisplay = DisplayType.RECEIPT_MENU;
             break;
          case EARLY_ECONOMY_WASH:
             System.out.println("EARLYECONOMY wash");
-            returnDisplay = 3;
+	    buyWash(earlyEconomyWash);
+            returnDisplay = DisplayType.RECEIPT_MENU;
             break;
          case ABORT:
             System.out.println("ABORT CALLED");
-            returnDisplay = 0;
+            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
             break;
          case RECHARGE:
             System.out.println("RECHARGE");
-            returnDisplay = 0;
+            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
             break;
-         case INSERT_CARD:
+         case CARD_INSERTED:
             System.out.println("INSERT CARD");
-            returnDisplay = 1;
+	    loadAccount(1);
+            returnDisplay = DisplayType.NORMAL_MENU;
             break;
          case START_WASH:
             System.out.println("START WASH");
-            returnDisplay = 6;
+            returnDisplay = DisplayType.WAIT_SCREEN;
             break;
          case RECEIPT:
             System.out.println("RECEIPT");
-            returnDisplay = 5;
+            returnDisplay = DisplayType.INSTRUCTION_SCREEN;
             break;
          case NO_RECEIPT:
             System.out.println("NO RECEIPT");
-            returnDisplay = 5;
+            returnDisplay = DisplayType.INSTRUCTION_SCREEN;
             break;
       }
       return(returnDisplay);
    }
     
-    // public void buyWash(WashType wash) {
-	
-    // }
+    public void buyWash(WashType wash) {
+	// if(wash.price > credit) {
+	    // success
+	// }
+	// else {
+	    // ikke nok penge
+	// }
+    }
+    
+    public void getMenu()
+    {
+	// hvis timestamp er inde for ...
+	// returner earlybird menu
+	// ellsers returner normal menu
+    }
+    
+    public void loadAccount(int id)
+    {
+	// currentAccount = new Account(id, 300);
+    }
    
    public Account getAccount()
    {
