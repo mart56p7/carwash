@@ -37,7 +37,7 @@ public class ReceiptMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.START_WASH);
+               gui.runCommand(Operation.NO_RECEIPT);
             }
          });		
       this.add(buttonno);      
@@ -51,7 +51,7 @@ public class ReceiptMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.START_WASH);
+               gui.runCommand(Operation.RECEIPT);
             }
          });		
       this.add(buttonyes);            
