@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 public class Account
 {
    LocalDateTime timestamp;
+   double balance;
+   int accountId;
 
-   public Account()
+   public Account(int _accountId, double _balance)
    {
+      accountId = _accountId;
+      balance = _balance;
       setSessionTimeStamp();
    }
 
@@ -19,7 +23,16 @@ public class Account
    
    public double getBalance()
    {
-      return(0);
+      return(balance);
    }
-
+   
+   public int getId()
+   {
+      return(accountId);
+   }
+   
+   public void setBalanace(double _balance)
+   {
+      balance = _balance;
+   }
 }
