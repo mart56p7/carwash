@@ -5,11 +5,16 @@ enum Operation{
    EARLY_ECONOMY_WASH,
    DELUX_WASH,
    ABORT,
-   RECHARGE,
+   ABORT_RECHARGE,
+   RECHARGE_MENU,
+   RECHARGE_200,
+   RECHARGE_500,
+   RECHARGE_1000,
    CARD_INSERTED,
    RECEIPT,
    NO_RECEIPT,
-   START_WASH
+   START_WASH,
+   FINISHED
 }
 
 class WashHallManager
@@ -32,49 +37,73 @@ class WashHallManager
    {
       DisplayType returnDisplay = DisplayType.INSERT_CARD_SCREEN;
       switch(o) {
+         case CARD_INSERTED:
+	     // TODO 
+	     /*
+	       verify card
+	       create account and set current
+	       return correct menu depening on timestamp
+	       use getMenu function
+	      */
+            System.out.println("INSERT CARD");
+            returnDisplay = DisplayType.NORMAL_MENU;
+            break;
          case STANDARD_WASH:
             System.out.println("standard wash");
-	    buyWash(standardWash);
-            returnDisplay = DisplayType.RECEIPT_MENU;
+	    returnDisplay = buyWash(standardWash);
             break;
          case ECONOMY_WASH:
             System.out.println("ECONOMY wash");
-	    buyWash(economyWash);
-            returnDisplay = DisplayType.RECEIPT_MENU;
+            returnDisplay = buyWash(economyWash);
             break;
          case DELUX_WASH:
             System.out.println("DELUX wash");
-	    buyWash(deluxWash);
-            returnDisplay = DisplayType.RECEIPT_MENU;
+            returnDisplay = buyWash(deluxWash);
             break;
          case EARLY_STANDARD_WASH:
             System.out.println("EARLYSTANDARD wash");
-	    buyWash(earlyStandardWash);
-            returnDisplay = DisplayType.RECEIPT_MENU;
+            returnDisplay = buyWash(earlyStandardWash);
             break;
          case EARLY_ECONOMY_WASH:
             System.out.println("EARLYECONOMY wash");
-	    buyWash(earlyEconomyWash);
-            returnDisplay = DisplayType.RECEIPT_MENU;
+            returnDisplay = buyWash(earlyEconomyWash);
             break;
          case ABORT:
             System.out.println("ABORT CALLED");
             returnDisplay = DisplayType.INSERT_CARD_SCREEN;
             break;
-         case RECHARGE:
+         case ABORT_RECHARGE:
+	     // TODO
+	     // kald samme get menu som card inserted
+	     // use getMenu function
+            System.out.println("ABORT CALLED");
+            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
+            break;
+         case RECHARGE_MENU:
+            returnDisplay = DisplayType.RECHARGE_MENU;
+            break;
+         case RECHARGE_200:
+	     // TODO
             System.out.println("RECHARGE");
             returnDisplay = DisplayType.INSERT_CARD_SCREEN;
             break;
-         case CARD_INSERTED:
-            System.out.println("INSERT CARD");
-	    loadAccount(1);
-            returnDisplay = DisplayType.NORMAL_MENU;
+         case RECHARGE_500:
+	     // TODO
+            System.out.println("RECHARGE");
+            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
+            break;
+         case RECHARGE_1000:
+	     // TODO
+            System.out.println("RECHARGE");
+            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
             break;
          case START_WASH:
             System.out.println("START WASH");
             returnDisplay = DisplayType.WAIT_SCREEN;
             break;
          case RECEIPT:
+	     // TODO
+	     // print salges gennem vores printerclass
             System.out.println("RECEIPT");
             returnDisplay = DisplayType.INSTRUCTION_SCREEN;
             break;
@@ -82,17 +111,27 @@ class WashHallManager
             System.out.println("NO RECEIPT");
             returnDisplay = DisplayType.INSTRUCTION_SCREEN;
             break;
+         case FINISHED:
+	     // TODO
+	     // selfdiagnistics
+	     // reset all data
+	     // back to insert wash card screen
+            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
+            break;
       }
       return(returnDisplay);
    }
     
-    public void buyWash(WashType wash) {
-	// if(wash.price > credit) {
-	    // success
-	// }
-	// else {
-	    // ikke nok penge
-	// }
+    public DisplayType buyWash(WashType wash) {
+	// TODO 
+	// tjek om der er kredit nok til den valgte vask
+	// hvis ikke:
+	// send til recharge menuen
+	// ellers:
+	// send til receipt menuen
+
+	// skal sende den korrekte menu tilbage alt efter udfald
+	return DisplayType.RECEIPT_MENU;
     }
     
     public void getMenu()
@@ -102,11 +141,6 @@ class WashHallManager
 	// ellsers returner normal menu
     }
     
-    public void loadAccount(int id)
-    {
-	// currentAccount = new Account(id, 300);
-    }
-   
    public Account getAccount()
    {
       System.out.println("returning account");   

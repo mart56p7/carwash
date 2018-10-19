@@ -54,7 +54,7 @@ public class WaitScreen extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.ABORT);
+               gui.runCommand(Operation.FINISHED);
             }
          });		
       this.add(simbutton);	       

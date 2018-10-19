@@ -50,7 +50,7 @@ public class WashTypeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.RECHARGE);
+               gui.runCommand(Operation.RECHARGE_MENU);
             }
          });		
       this.add(button0);	

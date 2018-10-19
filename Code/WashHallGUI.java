@@ -87,7 +87,8 @@ class WashHallGUI extends SwingWorker<Object, Object>
       screens.put(DisplayType.RECEIPT_MENU, new ReceiptMenu(this));
       screens.put(DisplayType.ERROR_SCREEN, new ErrorScreen(this));
       screens.put(DisplayType.INSTRUCTION_SCREEN, new InstructionScreen(this));
-      screens.put(DisplayType.WAIT_SCREEN, new RechargeMenu(this));
+      screens.put(DisplayType.WAIT_SCREEN, new WaitScreen(this));
+      screens.put(DisplayType.RECHARGE_MENU, new RechargeMenu(this));
 
       // screens[0] = new InsertCardScreen(this);
       // screens[1] = new WashTypeEarlyBirdMenu(this);
