@@ -1,3 +1,11 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.*;   
 /**
 Receipt Menu.
 */
@@ -29,7 +37,7 @@ public class ReceiptMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(5);
+               gui.runCommand(Operation.START_WASH);
             }
          });		
       this.add(buttonno);      
@@ -43,7 +51,7 @@ public class ReceiptMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(5);
+               gui.runCommand(Operation.START_WASH);
             }
          });		
       this.add(buttonyes);            

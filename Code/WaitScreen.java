@@ -1,3 +1,11 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.*;   
 /**
 Shows wait screen
 */
@@ -46,7 +54,7 @@ public class WaitScreen extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(0);
+               gui.runCommand(Operation.ABORT);
             }
          });		
       this.add(simbutton);	       

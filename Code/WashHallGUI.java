@@ -1,3 +1,11 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.*;
 class WashHallGUI extends SwingWorker<Object, Object>
 {
    private int screenwidth = 0;
@@ -6,7 +14,7 @@ class WashHallGUI extends SwingWorker<Object, Object>
    Font fontmedium;
    Font fontsmall;
    JFrame frame;
-	WashHallManager whmanager;
+   WashHallManager whmanager;
    
    JPanel[] screens = null;
 	
@@ -15,7 +23,7 @@ class WashHallGUI extends SwingWorker<Object, Object>
    public WashHallGUI()
    {
       //Object that contains all business logic
-   	whmanager = new WashHallManager(this);
+      whmanager = new WashHallManager(this);
       //Setting up our font setting
       fontbig = new Font("Arial", Font.PLAIN, 40);
       fontmedium = new Font("Arial", Font.PLAIN, 24);
@@ -64,10 +72,10 @@ class WashHallGUI extends SwingWorker<Object, Object>
          frame.add(screens[i]);
       }
       screens[0].setVisible(true);      
-		      
+   	      
       //Creates our info screen
       //this.execute();
-
+   
    }
    
    

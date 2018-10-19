@@ -1,3 +1,11 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.*;   
 /**
 Shows normal wash type menu
 */
@@ -42,7 +50,7 @@ public class WashTypeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(7);
+               gui.runCommand(Operation.RECHARGE);
             }
          });		
       this.add(button0);	
@@ -56,7 +64,7 @@ public class WashTypeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(3);
+               gui.runCommand(Operation.RECEIPT);
             }
          });		
       this.add(button1);
@@ -70,7 +78,7 @@ public class WashTypeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(3);
+               gui.runCommand(Operation.RECEIPT);
             }
          });		
       this.add(button2);	  
@@ -84,7 +92,7 @@ public class WashTypeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(3);
+               gui.runCommand(Operation.RECEIPT);
             }
          });		
       this.add(button3);	              
@@ -98,7 +106,7 @@ public class WashTypeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(0);
+               gui.runCommand(Operation.ABORT);
             }
          });		
       this.add(button4);	 

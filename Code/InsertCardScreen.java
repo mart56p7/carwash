@@ -1,3 +1,11 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.*;
 /**
 Shows Insert card screen
 */
@@ -31,7 +39,7 @@ public class InsertCardScreen extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(1);
+               gui.runCommand(Operation.INSERT_CARD);
             }
          });		
       this.add(simbutton);	  

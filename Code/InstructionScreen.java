@@ -1,3 +1,11 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
+import java.awt.GraphicsDevice;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.*;
 /**
 Shows instruction screen
 */
@@ -42,7 +50,7 @@ public class InstructionScreen extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(6);
+               gui.runCommand(Operation.START_WASH);
             }
          });		
       this.add(simbutton);	        
