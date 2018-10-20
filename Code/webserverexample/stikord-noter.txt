@@ -1,0 +1,10 @@
+
+
+The terminal is build as an event driven programs. Through our use cases, we have identified events and categorized these. This has made it possible to splitup the GUI and the business logic. Because of this we thread each as a seperat program. Where the GUI is working with the business logic class, but we at any point remove the gui and implement another user interface (f.x. tekstbased instead of graphcis)
+Ref: https://en.wikipedia.org/wiki/Event-driven_programming
+
+
+To solve the recruirements, we have divided the program into 3 sections.
+- Terminal: This is the terminal the user interacts with
+- Backend: This is the database server, that contains all account information, and its through the backend that the Terminal verifies the user
+- Statistics: This is interface for the Owner into the backend, so data can be pulled.
