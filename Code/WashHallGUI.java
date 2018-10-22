@@ -38,8 +38,6 @@ class WashHallGUI extends SwingWorker<Object, Object>
     // JPanel[] screens = null;
     Map<DisplayType, JPanel> screens = null;
 	
-   Account account = null;
-   
     void DisableAllScreen()
     {
 	for(Map.Entry m:screens.entrySet()){  
