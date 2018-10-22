@@ -1,3 +1,5 @@
+import java.time.*;
+
 enum Operation{
    STANDARD_WASH,
    EARLY_STANDARD_WASH,
@@ -35,20 +37,54 @@ class WashHallManager
       gui = _gui;
    }
    
+   public void loadAccount () {
+   //To do, getId from CardReader.
+   //Load account from database.
+   Account newAccount = new Account(2, 500);
+   currentAccount = newAccount;
+     
+   }
+   public boolean isEarlyBirdDay() {
+         DayOfWeek day = currentAccount.getTimeStamp().getDayOfWeek();
+         if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
+            return true;
+         }
+         else {
+            return false;
+         }         
+   }
+   public boolean isEarlyBirdTime() {
+         LocalTime now = currentAccount.getTimeStamp().toLocalTime();
+         LocalTime startTime = LocalTime.of(0,0);
+         LocalTime endTime = LocalTime.of(13,59); 
+         
+         if (now.isAfter(startTime) && now.isBefore(endTime))
+         {
+            return true;
+         }
+         else {
+            return false;
+         }
+   }
+   
+   public DisplayType getNormalOrEarlyMenu() {         
+         if (isEarlyBirdDay() && isEarlyBirdTime()) {
+         return DisplayType.EARLYBIRD_MENU;
+         }
+         else {
+         return DisplayType.NORMAL_MENU;
+         }
+   }
+   
+   
    public DisplayType runCommand(Operation o)
    {
       DisplayType returnDisplay = DisplayType.INSERT_CARD_SCREEN;
       switch(o) {
          case CARD_INSERTED:
-	     // TODO 
-	     /*
-	       verify card
-	       create account and set current
-	       return correct menu depening on timestamp
-	       use getMenu function
-	      */
+            loadAccount();          
+            returnDisplay = getNormalOrEarlyMenu();         
             System.out.println("INSERT CARD");
-            returnDisplay = DisplayType.NORMAL_MENU;
             break;
          case STANDARD_WASH:
             System.out.println("standard wash");
@@ -146,14 +182,7 @@ class WashHallManager
 	// skal sende den korrekte menu tilbage alt efter udfald
 	return DisplayType.RECEIPT_MENU;
     }
-    
-    public void getMenu()
-    {
-	// hvis timestamp er inde for ...
-	// returner earlybird menu
-	// ellsers returner normal menu
-    }
-    
+       
    public Account getAccount()
    {
       System.out.println("returning account");   
