@@ -17,7 +17,7 @@ public class Account
    public void setSessionTimeStamp()
    {
       DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");  
-      LocalDateTime timestamp = LocalDateTime.now();  
+      timestamp = LocalDateTime.now();  
       //System.out.println(dtf.format(now));
    }
    
@@ -34,5 +34,11 @@ public class Account
    public void setBalanace(double _balance)
    {
       balance = _balance;
+   }
+   
+   public LocalDateTime getTimeStamp () {
+   
+   return (timestamp);
+      
    }
 }
