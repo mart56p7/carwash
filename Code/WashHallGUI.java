@@ -8,6 +8,8 @@ import java.awt.Graphics;
 import java.awt.event.*;
 import java.util.*;
 
+
+//A screen has 0 or 1 user input. A menu has 2 or more user input options.
 enum DisplayType
 {
     INSERT_CARD_SCREEN,
@@ -17,7 +19,9 @@ enum DisplayType
     ERROR_SCREEN,
     INSTRUCTION_SCREEN,
     WAIT_SCREEN,
-    RECHARGE_MENU
+    RECHARGE_MENU,
+    INSERT_CREDITCARD_SCREEN,
+    RECHARGE_FAILED_SCREEN,
 }
 
 class WashHallGUI extends SwingWorker<Object, Object>
@@ -89,7 +93,8 @@ class WashHallGUI extends SwingWorker<Object, Object>
       screens.put(DisplayType.INSTRUCTION_SCREEN, new InstructionScreen(this));
       screens.put(DisplayType.WAIT_SCREEN, new WaitScreen(this));
       screens.put(DisplayType.RECHARGE_MENU, new RechargeMenu(this));
-
+      screens.put(DisplayType.INSERT_CREDITCARD_SCREEN, new InsertCreditcardScreen(this));
+      screens.put(DisplayType.RECHARGE_FAILED_SCREEN, new RechargeErrorScreen(this));
       // screens[0] = new InsertCardScreen(this);
       // screens[1] = new WashTypeEarlyBirdMenu(this);
       // screens[2] = new WashTypeMenu(this);

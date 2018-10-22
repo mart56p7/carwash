@@ -49,7 +49,7 @@ public class RechargeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.ABORT);
+               gui.runCommand(Operation.INSERT_CREDITCARD_SCREEN);
             }
          });		
       this.add(button1);
@@ -63,7 +63,7 @@ public class RechargeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.ABORT);
+               gui.runCommand(Operation.INSERT_CREDITCARD_SCREEN);
             }
          });		
       this.add(button2);	  
@@ -77,7 +77,7 @@ public class RechargeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.ABORT);
+               gui.runCommand(Operation.INSERT_CREDITCARD_SCREEN);
             }
          });		
       this.add(button3);	              
@@ -91,7 +91,7 @@ public class RechargeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.ABORT);
+               gui.runCommand(Operation.ABORT_RECHARGE);
             }
          });		
       this.add(button4);	 

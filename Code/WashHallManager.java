@@ -10,6 +10,8 @@ enum Operation{
    RECHARGE_200,
    RECHARGE_500,
    RECHARGE_1000,
+   INSERT_CREDITCARD_SCREEN,
+   CREDITCARD_INSERTED,
    CARD_INSERTED,
    RECEIPT,
    NO_RECEIPT,
@@ -85,18 +87,29 @@ class WashHallManager
          case RECHARGE_200:
 	     // TODO
             System.out.println("RECHARGE");
-            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
+            returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
             break;
          case RECHARGE_500:
 	     // TODO
             System.out.println("RECHARGE");
-            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
+            returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
             break;
          case RECHARGE_1000:
 	     // TODO
             System.out.println("RECHARGE");
-            returnDisplay = DisplayType.INSERT_CARD_SCREEN;
+            returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
             break;
+         case INSERT_CREDITCARD_SCREEN:
+	     // TODO
+            System.out.println("INSERT_CREDITCARD_SCREEN");
+            returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
+            break;
+         case CREDITCARD_INSERTED:
+	     // TODO
+         //Overfør penge til kort etc. hvis alt går godt, ellers vis en fejl
+            System.out.println("CREDITCARD_INSERTED");
+            returnDisplay = DisplayType.RECHARGE_FAILED_SCREEN;
+            break;      
          case START_WASH:
             System.out.println("START WASH");
             returnDisplay = DisplayType.WAIT_SCREEN;
