@@ -65,13 +65,11 @@ class WashHallGUI
       frame.addWindowListener(
          new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
-               cancel(true);
                System.out.println("windowClosed");
                Runtime.getRuntime().exit(0);
             }
          
             public void windowClosing(WindowEvent e) {
-               cancel(true);
                System.out.println("windowClosing");
                Runtime.getRuntime().exit(0);
             }			

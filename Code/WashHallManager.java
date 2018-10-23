@@ -32,6 +32,9 @@ class WashHallManager
     
     Account currentAccount = null;
     double selectedRechargeAmount = 0;
+    Printer printer = new Printer();
+    WashHallDatabaseInterface DBInterface = new WashHallDatabaseInterface();
+    Purchase newReceipt = null;
    
    public WashHallManager(WashHallGUI _gui)
    {
@@ -39,9 +42,8 @@ class WashHallManager
    }
    
    public void loadAccount () {
-   //To do, getId from CardReader.
-   //Load account from database.
-   Account newAccount = new Account(2, 500);
+   // TODO: add possibilities to get different accounts, instead of just iD = 1.
+   Account newAccount = DBInterface.getAccount(2);
    currentAccount = newAccount;
      
    }
@@ -111,23 +113,28 @@ class WashHallManager
             break;
          case STANDARD_WASH:
             System.out.println("standard wash");
-	    returnDisplay = buyWash(standardWash);
+	         returnDisplay = buyWash(standardWash);
+            newReceipt = new Purchase(currentAccount.getId(),standardWash.getName(),standardWash.getPrice());
             break;
          case ECONOMY_WASH:
             System.out.println("ECONOMY wash");
             returnDisplay = buyWash(economyWash);
+            newReceipt = new Purchase(currentAccount.getId(),economyWash.getName(),economyWash.getPrice());            
             break;
          case DELUX_WASH:
             System.out.println("DELUX wash");
             returnDisplay = buyWash(deluxWash);
+            newReceipt = new Purchase(currentAccount.getId(),deluxWash.getName(),deluxWash.getPrice());            
             break;
          case EARLY_STANDARD_WASH:
             System.out.println("EARLYSTANDARD wash");
             returnDisplay = buyWash(earlyStandardWash);
+            newReceipt = new Purchase(currentAccount.getId(),earlyStandardWash.getName(),earlyStandardWash.getPrice());
             break;
-         case EARLY_ECONOMY_WASH:
+            case EARLY_ECONOMY_WASH:
             System.out.println("EARLYECONOMY wash");
             returnDisplay = buyWash(earlyEconomyWash);
+            newReceipt = new Purchase(currentAccount.getId(),earlyEconomyWash.getName(),earlyEconomyWash.getPrice());
             break;
          case ABORT:
             System.out.println("ABORT CALLED");
@@ -159,8 +166,7 @@ class WashHallManager
 	     // TODO
             System.out.println("RECHARGE");
             returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
-            selectedRechargeAmount = 1000;
-                        
+            selectedRechargeAmount = 1000;                        
             break;
          case INSERT_CREDITCARD_SCREEN:
 	     // TODO
@@ -178,10 +184,9 @@ class WashHallManager
             returnDisplay = DisplayType.WAIT_SCREEN;
             break;
          case RECEIPT:
-	     // TODO
-	     // print salges gennem vores printerclass
             System.out.println("RECEIPT");
             returnDisplay = DisplayType.INSTRUCTION_SCREEN;
+            printer.printReceipt(newReceipt);
             break;
          case NO_RECEIPT:
             System.out.println("NO RECEIPT");
