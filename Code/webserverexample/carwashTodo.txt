@@ -24,10 +24,12 @@ Evt. hvis Rasmus er godt igang, så vis at vi kan bytte vores brugerflade ud med 
 Rapport Backend:
 Krav
 - Holder styr på accounts og kan give brugerinformation retur og tjekke om en bruger findes 
+
 Table accounts: 
 id (int autoincremental)
 balance (double)
 - Kan modtage om der er købt en vask og gemme dette i databasen
+
 Table purchases: 
 id (int autoincremental)
 accountId (int)
@@ -35,6 +37,7 @@ washtype (warchar 50)
 washprice (double)
 washtimestamp (datetime)
 - Kan modtage om et kort er blevet tanket op via en bank 
+
 Tablee recharge: 
 id (int autoincremental)
 accountId (int)

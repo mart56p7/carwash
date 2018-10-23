@@ -1,2 +1,4 @@
 *.class
 **.lck
+**.vbak
+/operationcontracts.pages
