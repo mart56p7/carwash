@@ -18,7 +18,12 @@ public class RechargeMenu extends JPanel
       gui = _gui;
       this.setLayout(null);
    
-      String balancelabeltext = "Balance " + gui.getWashHallManager().getAccount().getBalance();
+      String balancelabeltext = "";
+      if (gui.getWashHallManager().getAccount() == null){
+      balancelabeltext = "Balance 0"; }
+      else {
+      balancelabeltext = "Balance " +gui.getWashHallManager().getAccount().getBalance();
+      }
    	//Creates a Label
       balancelabel = new JLabel(balancelabeltext);
    	//Sets our label font
@@ -48,8 +53,8 @@ public class RechargeMenu extends JPanel
          new ActionListener()
          {
             public void actionPerformed(ActionEvent e)
-            {
-               gui.runCommand(Operation.INSERT_CREDITCARD_SCREEN);
+            {            
+               gui.runCommand(Operation.RECHARGE_1000);
             }
          });		
       this.add(button1);
@@ -63,7 +68,7 @@ public class RechargeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.INSERT_CREDITCARD_SCREEN);
+               gui.runCommand(Operation.RECHARGE_500);
             }
          });		
       this.add(button2);	  
@@ -77,7 +82,7 @@ public class RechargeMenu extends JPanel
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.INSERT_CREDITCARD_SCREEN);
+               gui.runCommand(Operation.RECHARGE_200);
             }
          });		
       this.add(button3);	              
@@ -103,7 +108,12 @@ public class RechargeMenu extends JPanel
    {   
       if(gui != null && balancelabel != null)
       {
-         String balancelabeltext = "Balance " + Double.toString(((gui.getWashHallManager()).getAccount()).getBalance());         
+      String balancelabeltext = "";
+      if (gui.getWashHallManager().getAccount() == null){
+      balancelabeltext = "Balance 0"; }
+      else {
+      balancelabeltext = "Balance " +gui.getWashHallManager().getAccount().getBalance();
+      }         
          balancelabel.setText(balancelabeltext);
          balancelabel.setFont(gui.getFontMedium());
       	//Calculate the size of the text in the label

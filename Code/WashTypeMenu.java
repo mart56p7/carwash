@@ -19,8 +19,12 @@ public class WashTypeMenu extends JPanel
       gui = _gui;
       this.setLayout(null);
    
-      String balancelabeltext = "Balance " + gui.getWashHallManager().getAccount().getBalance();
-   	//Creates a Label
+      String balancelabeltext = "";
+      if (gui.getWashHallManager().getAccount() == null){
+      balancelabeltext = "Balance 0"; }
+      else {
+      balancelabeltext = "Balance " +gui.getWashHallManager().getAccount().getBalance();
+      }   	//Creates a Label
       balancelabel = new JLabel(balancelabeltext);
    	//Sets our label font
       balancelabel.setFont(gui.getFontMedium());
@@ -118,7 +122,12 @@ public class WashTypeMenu extends JPanel
    {   
       if(gui != null && balancelabel != null)
       {
-         String balancelabeltext = "Balance " + Double.toString(((gui.getWashHallManager()).getAccount()).getBalance());         
+      String balancelabeltext = "";
+      if (gui.getWashHallManager().getAccount() == null){
+      balancelabeltext = "Balance 0"; }
+      else {
+      balancelabeltext = "Balance " +gui.getWashHallManager().getAccount().getBalance();
+      }         
          balancelabel.setText(balancelabeltext);
          balancelabel.setFont(gui.getFontMedium());
       	//Calculate the size of the text in the label

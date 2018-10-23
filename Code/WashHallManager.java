@@ -27,10 +27,11 @@ class WashHallManager
     WashType economyWash = new WashType("economy", 50);
     WashType standardWash = new WashType("standard", 80);
     WashType deluxWash = new WashType("delux", 120);
-    WashType earlyStandardWash = new WashType("earlyStandardWash", 40);
-    WashType earlyEconomyWash = new WashType("earlyEconomyWash", 64);
+    WashType earlyStandardWash = new WashType("earlyStandardWash", 64);
+    WashType earlyEconomyWash = new WashType("earlyEconomyWash", 40);
     
     Account currentAccount = null;
+    double selectedRechargeAmount = 0;
    
    public WashHallManager(WashHallGUI _gui)
    {
@@ -43,6 +44,26 @@ class WashHallManager
    Account newAccount = new Account(2, 500);
    currentAccount = newAccount;
      
+   }
+   
+   public DisplayType reCharge () {
+      currentAccount.addBalance(selectedRechargeAmount);
+         return getNormalOrEarlyMenu();
+   
+   }
+
+      
+   public DisplayType buyWash(WashType wash) {
+      if (currentAccount.getBalance() < wash.getPrice()) {
+         return DisplayType.RECHARGE_MENU; 
+      }
+      else {
+         currentAccount.removeBalance(wash.getPrice());
+         return DisplayType.RECEIPT_MENU; 
+      }
+      
+
+
    }
    public boolean isEarlyBirdDay() {
          DayOfWeek day = currentAccount.getTimeStamp().getDayOfWeek();
@@ -76,13 +97,15 @@ class WashHallManager
          }
    }
    
+
    
    public DisplayType runCommand(Operation o)
    {
       DisplayType returnDisplay = DisplayType.INSERT_CARD_SCREEN;
       switch(o) {
          case CARD_INSERTED:
-            loadAccount();          
+            loadAccount();
+            System.out.println(currentAccount.getBalance());         
             returnDisplay = getNormalOrEarlyMenu();         
             System.out.println("INSERT CARD");
             break;
@@ -124,16 +147,20 @@ class WashHallManager
 	     // TODO
             System.out.println("RECHARGE");
             returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
+            selectedRechargeAmount = 200;         
             break;
          case RECHARGE_500:
 	     // TODO
             System.out.println("RECHARGE");
             returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
+            selectedRechargeAmount = 500;
             break;
          case RECHARGE_1000:
 	     // TODO
             System.out.println("RECHARGE");
             returnDisplay = DisplayType.INSERT_CREDITCARD_SCREEN;
+            selectedRechargeAmount = 1000;
+                        
             break;
          case INSERT_CREDITCARD_SCREEN:
 	     // TODO
@@ -142,9 +169,9 @@ class WashHallManager
             break;
          case CREDITCARD_INSERTED:
 	     // TODO
-         //Overfør penge til kort etc. hvis alt går godt, ellers vis en fejl
+         //Overfoer penge til kort etc. hvis alt gaar godt, ellers vis en fejl
             System.out.println("CREDITCARD_INSERTED");
-            returnDisplay = DisplayType.RECHARGE_FAILED_SCREEN;
+            returnDisplay = reCharge();
             break;      
          case START_WASH:
             System.out.println("START WASH");
@@ -170,23 +197,11 @@ class WashHallManager
       }
       return(returnDisplay);
    }
-    
-    public DisplayType buyWash(WashType wash) {
-	// TODO 
-	// tjek om der er kredit nok til den valgte vask
-	// hvis ikke:
-	// send til recharge menuen
-	// ellers:
-	// send til receipt menuen
-
-	// skal sende den korrekte menu tilbage alt efter udfald
-	return DisplayType.RECEIPT_MENU;
-    }
        
    public Account getAccount()
    {
       System.out.println("returning account");   
-      return(new Account(0, 0));
+      return currentAccount;
    }
    
    public String getWashDoneTime()

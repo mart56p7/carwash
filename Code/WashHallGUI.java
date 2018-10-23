@@ -24,7 +24,7 @@ enum DisplayType
     RECHARGE_FAILED_SCREEN,
 }
 
-class WashHallGUI extends SwingWorker<Object, Object>
+class WashHallGUI
 {
     
    private int screenwidth = 0;
@@ -93,51 +93,15 @@ class WashHallGUI extends SwingWorker<Object, Object>
       screens.put(DisplayType.RECHARGE_MENU, new RechargeMenu(this));
       screens.put(DisplayType.INSERT_CREDITCARD_SCREEN, new InsertCreditcardScreen(this));
       screens.put(DisplayType.RECHARGE_FAILED_SCREEN, new RechargeErrorScreen(this));
-      // screens[0] = new InsertCardScreen(this);
-      // screens[1] = new WashTypeEarlyBirdMenu(this);
-      // screens[2] = new WashTypeMenu(this);
-      // screens[3] = new ReceiptMenu(this);
-      // screens[4] = new ErrorScreen(this);
-      // screens[5] = new InstructionScreen(this);
-      // screens[6] = new WaitScreen(this);
-      // screens[7] = new RechargeMenu(this);
+
       
       DisableAllScreen();
       screens.get(DisplayType.INSERT_CARD_SCREEN).setVisible(true);      
-   	      
-      //Creates our info screen
-      //this.execute();
+
    
-   }
+   } 
    
-   
-   
-   public Object doInBackground() throws Exception
-   {  	
-      // int n = 0;
-      // System.out.println("doInBackground started");		
-      // while(!isCancelled())
-      // {
-      //    System.out.println("doInBackground 1");	
-      //    if(n % 2 == 0)
-      //    {
-      //       System.out.println("doInBackground 2");				
-      //       screens[1].setVisible(true);				
-      //       screens[2].setVisible(false);
-      //    }
-      //    else
-      //    {
-      //       System.out.println("doInBackground 3");				
-      //       screens[1].setVisible(false);				
-      //       screens[2].setVisible(true);
-      //    }
-      //    n++;
-      //    System.out.println("doInBackground 4");
-      //    Thread.sleep(1000);			
-      // }
-      // System.out.println("doInBackground returning");
-      return(null);
-   }
+
 	
    public int getWidth()
    {

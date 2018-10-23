@@ -41,4 +41,15 @@ public class Account
    return (timestamp);
       
    }
+   
+   public void addBalance (double amount) {
+   balance += amount;   
+   }
+   
+   public void removeBalance (double amount) {
+      
+   balance -= amount;
+   }
+   
+
 }
