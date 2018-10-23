@@ -43,24 +43,27 @@ class WashHallManager
    
    public void loadAccount () {
    // TODO: add possibilities to get different accounts, instead of just iD = 1.
-   Account newAccount = DBInterface.getAccount(2);
-   currentAccount = newAccount;
-     
+   Account newAccount = DBInterface.getAccount(WashCardReader.getCardId());
+   currentAccount = newAccount;       
    }
    
    public DisplayType reCharge () {
       currentAccount.addBalance(selectedRechargeAmount);
-         return getNormalOrEarlyMenu();
-   
+      DBInterface.setBalance(currentAccount.getId(),currentAccount.getBalance());
+         return getNormalOrEarlyMenu();   
    }
 
       
    public DisplayType buyWash(WashType wash) {
       if (currentAccount.getBalance() < wash.getPrice()) {
-         return DisplayType.RECHARGE_MENU; 
+           
+      return DisplayType.RECHARGE_MENU; 
       }
       else {
          currentAccount.removeBalance(wash.getPrice());
+         newReceipt = new Purchase(currentAccount.getId(),wash.getName(),wash.getPrice());
+         DBInterface.addPurchase(newReceipt);
+         DBInterface.setBalance(currentAccount.getId(),currentAccount.getBalance());
          return DisplayType.RECEIPT_MENU; 
       }
       
@@ -114,27 +117,22 @@ class WashHallManager
          case STANDARD_WASH:
             System.out.println("standard wash");
 	         returnDisplay = buyWash(standardWash);
-            newReceipt = new Purchase(currentAccount.getId(),standardWash.getName(),standardWash.getPrice());
             break;
          case ECONOMY_WASH:
             System.out.println("ECONOMY wash");
             returnDisplay = buyWash(economyWash);
-            newReceipt = new Purchase(currentAccount.getId(),economyWash.getName(),economyWash.getPrice());            
             break;
          case DELUX_WASH:
             System.out.println("DELUX wash");
             returnDisplay = buyWash(deluxWash);
-            newReceipt = new Purchase(currentAccount.getId(),deluxWash.getName(),deluxWash.getPrice());            
             break;
          case EARLY_STANDARD_WASH:
             System.out.println("EARLYSTANDARD wash");
             returnDisplay = buyWash(earlyStandardWash);
-            newReceipt = new Purchase(currentAccount.getId(),earlyStandardWash.getName(),earlyStandardWash.getPrice());
             break;
             case EARLY_ECONOMY_WASH:
             System.out.println("EARLYECONOMY wash");
             returnDisplay = buyWash(earlyEconomyWash);
-            newReceipt = new Purchase(currentAccount.getId(),earlyEconomyWash.getName(),earlyEconomyWash.getPrice());
             break;
          case ABORT:
             System.out.println("ABORT CALLED");

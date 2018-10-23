@@ -28,18 +28,27 @@ public class InsertCardScreen extends JPanel
       b.setBounds(_gui.getWidth()/2-(int)(labelsize.getWidth()/2),_gui.getHeight()/2-(int)(labelsize.getHeight()/2),(int)labelsize.getWidth(),(int)labelsize.getHeight());  
       this.add(b);
    	
+      JTextField accountField = new JTextField();
+      accountField.setBounds(_gui.getWidth()/2-50,_gui.getHeight()/2+50,100,30);
+      this.add(accountField);  
+      
+      
       String simbuttonlabel = "Simulate card insert";
       JButton simbutton=new JButton(simbuttonlabel); 
       simbutton.setFont(gui.getFontMedium());
    	//Calculate the size of the text in the labInsertCardScreenel
       Dimension simbuttonlabelsize = gui.getTextDimensions(simbutton, gui.getFontMedium(), simbuttonlabel);       
-      simbutton.setBounds(_gui.getWidth()/2-(int)(simbuttonlabelsize.getWidth()/2),_gui.getHeight()/2-(int)(simbuttonlabelsize.getHeight()/2)+50,(int)simbuttonlabelsize.getWidth()+40,(int)simbuttonlabelsize.getHeight());  
+      simbutton.setBounds(_gui.getWidth()/2-(int)(simbuttonlabelsize.getWidth()/2),_gui.getHeight()/2-(int)(simbuttonlabelsize.getHeight()/2)+100,(int)simbuttonlabelsize.getWidth()+40,(int)simbuttonlabelsize.getHeight());  
       simbutton.addActionListener(
          new ActionListener()
          {
             public void actionPerformed(ActionEvent e)
             {
-               gui.runCommand(Operation.CARD_INSERTED);
+               if (WashCardReader.setCardId(accountField.getText())) {
+                  gui.runCommand(Operation.CARD_INSERTED);
+               }
+                           
+            
             }
          });		
       this.add(simbutton);	  

@@ -31,7 +31,7 @@ public class Account
       return(accountId);
    }
    
-   public void setBalanace(double _balance)
+   public void setBalance(double _balance)
    {
       balance = _balance;
    }
