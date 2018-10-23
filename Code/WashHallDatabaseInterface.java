@@ -6,6 +6,9 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;
+
 public class WashHallDatabaseInterface
 {
 
@@ -30,35 +33,6 @@ public class WashHallDatabaseInterface
 	//Do something
 	System.out.println("WashHallDatabaseInterface registerSale WashType: " + sale.getWashType().getName() + " Price: " + sale.getPrice());
     }
-    
-    // Connection getConnection()
-    // {
-    // 	Connection conn = null;
-    // 	try {
-    // 	    conn = DriverManager.getConnection("jdbc:sqlite:testdb.db");
-    // 	} catch (SQLException e) {
-    //         System.out.println(e.getMessage());
-    //     } finally {
-    // 	    return conn;
-    // 	}
-    // }
-    
-    // ResultSet querySql(String sql)
-    // {
-    // 	Connection conn = null;
-    // 	conn = getConnection();
-    // 	PreparedStatement pstmt = null;
-    // 	ResultSet rs = null;
-
-    // 	try {
-    // 	    pstmt = conn.prepareStatement(sql);
-    // 	    rs = pstmt.executeQuery();
-    // 	} catch (SQLException e) {
-    // 	    System.out.println(e.getMessage());
-    // 	} 	
-	
-    // 	return rs;
-    // }
 
     public ArrayList<Integer> testConnection()
     {
@@ -78,7 +52,31 @@ public class WashHallDatabaseInterface
 
     }
     
-    
+    public ArrayList<Purchase> getPurchases()
+    {
+	ResultSet rs = querySql("select * from Purchases");
+	ArrayList<Purchase> purchases = new ArrayList<Purchase>();
+	
+	try {
+	    while(rs.next()) {
+		DateTimeFormatter formatterNew = DateTimeFormatter.ofPattern("yyyy-LL-dd HH:mm:ss");
+		LocalDateTime d = LocalDateTime.parse(rs.getString("washtimestamp"), formatterNew);
+		System.out.println(d.toString());
+
+		Purchase p = new Purchase(rs.getInt("id"),
+					  rs.getInt("accountId"),
+					  rs.getString("washType"),
+					  rs.getDouble("washPrice"),
+					  d);
+		purchases.add(p);
+	    }
+	} catch(Exception e) {
+	    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    System.exit(0);
+	}
+
+	return purchases;
+    }
 
     ResultSet querySql(String sql)
     {
@@ -116,3 +114,4 @@ public class WashHallDatabaseInterface
     
 
 }
+
