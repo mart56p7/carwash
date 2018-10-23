@@ -74,6 +74,16 @@ public class WashHallDatabaseInterface
          System.err.println( e.getClass().getName() + ": " + e.getMessage() );
          System.exit(0);
       }
+      
+      try {
+	  if(conn != null) {
+	      rs.close();
+	      conn.close();
+	  }
+      } catch(Exception e) {
+         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+         System.exit(0);
+      }
    
       return purchases;
    }
@@ -126,7 +136,7 @@ public class WashHallDatabaseInterface
          System.err.println( e.getClass().getName() + ": " + e.getMessage() );
          System.exit(0);
       }
-   
+      
       return purchases;
    }
     
@@ -140,6 +150,17 @@ public class WashHallDatabaseInterface
          System.err.println( e.getClass().getName() + ": " + e.getMessage() );
          System.exit(0);
       }
+
+      try {
+	  if(conn != null) {
+	      rs.close();
+	      conn.close();
+	  }
+      } catch(Exception e) {
+         System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+         System.exit(0);
+      }
+
       return loadedAccount;
    }
     
@@ -158,6 +179,15 @@ public class WashHallDatabaseInterface
 	// System.out.println(sql);
 
 	executeSql(sql);
+
+	try {
+	    if(conn != null) {
+		conn.close();
+	    }
+	} catch(Exception e) {
+	    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    System.exit(0);
+	}
     }
     
     void executeSql(String sql)

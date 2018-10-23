@@ -13,15 +13,20 @@ public class databasetester
 	
 	ArrayList<Purchase> purchases = wdb.getPurchases();
 	for(Purchase p : purchases) {
-	    System.out.println("id " + p.getId());
+	    System.out.printf("id:%d\ttype:%s\tprice:%f\ttime:%s\n", p.getId(), p.getWashType(), p.getWashPrice(), p.getWashTimeStamp().toString());
 	}
 	
 	System.out.println("loading account 1");
 	Account loadedAccount = wdb.getAccount(1);
 	System.out.println("balance: " + loadedAccount.getBalance());
 	
-	Purchase p = new Purchase(1,"standard",80);
-	wdb.AddPurchase(p);
+	Purchase newPur = new Purchase(1,"standard",80);
+	wdb.AddPurchase(newPur);
+
+	purchases = wdb.getPurchases();
+	for(Purchase p : purchases) {
+	    System.out.printf("id:%d\ttype:%s\tprice:%f\ttime:%s\n", p.getId(), p.getWashType(), p.getWashPrice(), p.getWashTimeStamp().toString());
+	}
 
     }
 }

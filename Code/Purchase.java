@@ -29,7 +29,7 @@ public class Purchase
 
     public int getId()
     {
-	return accountId;
+	return id;
     }
     
     public int getAccountId()
