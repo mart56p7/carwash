@@ -132,7 +132,7 @@ public class WashHallDatabaseInterface
 	executeSql(sql);
     }  
     
-    public void AddPurchase(Purchase p)
+    public void addPurchase(Purchase p)
     {
 	DateTimeFormatter formatterNew = DateTimeFormatter.ofPattern("yyyy-LL-dd HH:mm:ss");
 	String dateTime = p.getWashTimeStamp().format(formatterNew).toString();
