@@ -10,6 +10,12 @@ import java.util.Date;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
+
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.concurrent.ThreadLocalRandom;
+
 public class WashHallStatistics implements Runnable
 {
    WashHallDatabaseInterface dbinterface = null;
@@ -50,11 +56,35 @@ public class WashHallStatistics implements Runnable
          String fileRequested = parse.nextToken().toLowerCase();
          if (method.equals("GET"))
          {
+			 /*
+			 for(int i = 0; i < 1000; i++)
+			 {
+				 //Lets generate some data
+				long minDay = LocalDate.of(2017, 1, 1).toEpochDay();
+				long maxDay = LocalDate.of(2018, 11, 1).toEpochDay();
+				long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
+				LocalDate randomDate = LocalDate.ofEpochDay(randomDay);			 
+				 int washint = (int)(Math.random() * 5);
+				 String[] washType = { "earlyEconymyWash", "earlyStandardWash", "economy", "standard", "delux"};
+				 double[] washPrice = { 40, 64, 50, 80, 120 };
+				 dbinterface.addPurchase(new Purchase(0, (int)(Math.random() * 4), washType[washint], washPrice[washint], randomDate.atStartOfDay()));
+				 System.out.println(randomDate.atStartOfDay().toString());
+			 }
+
+			 */
+			 
             out = new PrintWriter(client.getOutputStream());
             System.out.println("Supported connection, returning statistics page");
-            String page = getHTMLHeader("Wash hall statistics") + getJSYearlyChart() + getJSChart() + getJSPieChart() + getCanvasAreas(0, 0) + getMonthlyRevenueData() + getLastMonthsRevenueData() + getYearlyRevenueData() + getHTMLFooter();
+            String page = getHTMLHeader("Wash hall statistics") + getJSYearlyChart() + getJSChart() + getJSPieChart();
+			Calendar c = Calendar.getInstance();
+			c.setTime(new Date());
+			page += getMonthlyRevenueData(c.get(Calendar.MONTH)+1, c.get(Calendar.YEAR), "Monthly revenue chart", "Total income this month (so far)", "revenuemonthly", "washtypesmonthlypiecanvas" );
+			c.add(Calendar.MONTH, -1);
+			page += getMonthlyRevenueData(c.get(Calendar.MONTH)+1, c.get(Calendar.YEAR), "Monthly revenue chart", "Total income last month", "revenuelastmonth", "washtypeslastmonthpiecanvas" );			
+			page += getYearlyRevenueData();
+			page += getHTMLFooter();
             outData(out, page);
-         }               
+         }
       }
       catch(Exception e)
       {
@@ -137,7 +167,7 @@ public class WashHallStatistics implements Runnable
          "		{" +
          "			this.ctx.textAlign='right';" +
          "			this.ctx.fillStyle = 'black';" +
-         "            this.ctx.fillText(i*10,25,this.canvas.height-i-30-5);" +
+         "            this.ctx.fillText(i*3,25,this.canvas.height-i-30-5);" +
          "			i = i + 10;" +
          "		}" +
          "		for (categ in this.options.data){" +
@@ -145,16 +175,16 @@ public class WashHallStatistics implements Runnable
          "           val = this.options.data[categ];" +
          "			this.ctx.fillStyle = 'black';" +
          "			this.ctx.textAlign='center';" +
-         "            this.ctx.fillText(categ,xval+25,yval+15);" +
+         "          this.ctx.fillText(categ.substring(0, String(categ).length-5),xval+25,yval+15);" +
          "			for(cate in val)" +
          "			{" +
          "				this.ctx.fillStyle = this.colors[color_index%this.colors.length];" +
-         "				this.ctx.fillRect(xval, yval, 50, -1 * (val[cate]/10));" +
-         "				yval = yval - (val[cate]/10);" +
+         "				this.ctx.fillRect(xval, yval, 50, -1 * (val[cate]/3));" +
+         "				yval = yval - (val[cate]/3);" +
          "				color_index++;" +
          "			}" +
          "			color_index = 0;" +
-         "			xval = xval + 60;" +
+         "			xval = xval + 54;" +
          "        }" +
          "    }" +
          "}" +
@@ -180,11 +210,11 @@ public class WashHallStatistics implements Runnable
          "		var color_index;" +
          "		color_index = 0;" +
          "		var i = 0;" +
-         "		while(this.canvas.height - 30 - 10 - i > 0)" +
+         "		while(this.canvas.height - 30 - 10 - i*5 > 0)" +
          "		{" +
          "			this.ctx.textAlign='right';" +
          "			this.ctx.fillStyle = 'black';" +
-         "           this.ctx.fillText(i,25,this.canvas.height-i-30-5);" +
+         "           this.ctx.fillText(i,25,this.canvas.height-i*5-30-5);" +
          "			i = i + 10;" +
          "		}" +
          "		for (categ in this.options.data){" +
@@ -196,7 +226,7 @@ public class WashHallStatistics implements Runnable
          "			for(cate in val)" +
          "			{" +
          "				this.ctx.fillStyle = this.colors[color_index%this.colors.length];" +
-         "				this.ctx.fillRect(xval, yval, 20, -1 * val[cate]);" +
+         "				this.ctx.fillRect(xval, yval, 20, -1 * val[cate] * 5);" +
          "				yval = yval - val[cate];" +
          "				color_index++;" +
          "			}" +
@@ -272,11 +302,14 @@ public class WashHallStatistics implements Runnable
          "				labelX = this.canvas.width/2 + (offset + pieRadius / 2) * Math.cos(start_angle + slice_angle/2);" +
          "				labelY = this.canvas.height/2 + (offset + pieRadius / 2) * Math.sin(start_angle + slice_angle/2);" +         
          "			}" +
-         "			var labelText = Math.round(100 * val / total_value);" +
+         "			if(val > 0)" +
+		 "			{" +
+		 "			var labelText = val;" +
          "			this.ctx.fillStyle = 'white';" +
          "			this.ctx.font = 'bold 20px Arial';" +
-         "			this.ctx.fillText(labelText+'%', labelX,labelY);" +
+         "			this.ctx.fillText(labelText, labelX,labelY);" +
          "			start_angle += slice_angle;" +
+		 "			}" +
          "		}" +
          "   }" +
          "}" +
@@ -284,41 +317,131 @@ public class WashHallStatistics implements Runnable
          );
    }
    
-   private String getCanvasAreas(double thismonthincome, double lastmonthincome)
+
+
+	private String getMonthlyStatCanvas(String title, String incometitle, double income, String chartid, String piechartid )
+	{
+		return("<div style='display: inline-block'>" +
+         "	<div style='font-size: 20px; font-weight: bold;'>"+title+"</div>" +
+         "	<div style='font-size: 15px;'>"+ incometitle +": " + Double.toString(income) + "</div>" +
+         "	<div style='float: left'>" +
+         "		<canvas id='"+chartid+"' width='820' height='400'></canvas>" +
+         "	</div>" +
+         "	<div style='float: right'>" +
+         "		<canvas id='"+piechartid+"' width='400' height='400'></canvas>" +
+         "	</div>" +
+         "	<div style='display: inline-block'>" +
+         "		Shows the different washes: <div style='color: #fde23e; display: inline-block'>Early Bird Economy</div>, <div style='color: #f16e23; display: inline-block'>Early Bird Standard</div>, <div style='color: #57d9ff; display: inline-block'>Economy</div>, <div style='color: #937e88; display: inline-block'>Standard</div> & <div style='color: #0000FF; display: inline-block'>De luxe</div>" +
+         "		. The pie chart, shows the sum of the different washtypes." +
+         "	</div>" +
+         "</div>" +
+         "<br/><br/>");		
+	}
+   
+   
+   /**
+   We need data from the database to make this work!
+   
+   monthlyrevenu expects 'day of month' : {'Washtyp' ; amount} - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
+   piemonthlywashtypedata expects the different washtypes, and their amount - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
+   */
+   private String getMonthlyRevenueData(int month, int year,  String title, String incometitle, String chartid, String piechartid)
    {
-      return(
-         "<div style='display: inline-block'>" +
-         "	<div style='font-size: 20px; font-weight: bold;'>Monthly revenue chart</div>" +
-         "	<div style='font-size: 15px;'>Total income this month (so far): " + Double.toString(thismonthincome) + "</div>" +
-         "	<div style='float: left'>" +
-         "		<canvas id='revenuemonthly' width='820' height='400'></canvas>" +
-         "	</div>" +
-         "	<div style='float: right'>" +
-         "		<canvas id='washtypesmonthlypiecanvas' width='400' height='400'></canvas>" +
-         "	</div>" +
-         "	<div style='display: inline-block'>" +
-         "		Shows the different washes: <div style='color: #fde23e; display: inline-block'>Early Bird Economy</div>, <div style='color: #f16e23; display: inline-block'>Early Bird Standard</div>, <div style='color: #57d9ff; display: inline-block'>Economy</div>, <div style='color: #937e88; display: inline-block'>Standard</div> & <div style='color: #0000FF; display: inline-block'>De luxe</div>" +
-         "		. The pie chart, shows the sum of the different washtypes." +
-         "	</div>" +
-         "</div>" +
-         "<br/><br/>" +
-         "<div style='display: inline-block'>" +
-         "	<div style='font-size: 20px; font-weight: bold;'>Last months revenue chart</div>" +
-         "	<div style='font-size: 15px;'>Total income last month: " + Double.toString(lastmonthincome) + "</div>" +
-         "	<div style='float: left'>" +
-         "		<canvas id='revenuelastmonth' width='820' height='400'></canvas>" +
-         "	</div>" +
-         "	<div style='float: right'>" +
-         "		<canvas id='washtypeslastmonthpiecanvas' width='400' height='400'></canvas>" +
-         "	</div>" +
-         "	<div style='display: inline-block'>" +
-         "		Shows the different washes: <div style='color: #fde23e; display: inline-block'>Early Bird Economy</div>, <div style='color: #f16e23; display: inline-block'>Early Bird Standard</div>, <div style='color: #57d9ff; display: inline-block'>Economy</div>, <div style='color: #937e88; display: inline-block'>Standard</div> & <div style='color: #0000FF; display: inline-block'>De luxe</div>" +
-         "		. The pie chart, shows the sum of the different washtypes." +
-         "	</div>" +
-         "</div>" +
-         "<br/><br/>" +
-         "<div style='display: inline-block'>" +
-         "	<div style='font-size: 20px; font-weight: bold;'>Yearly revenue chart</div>" +
+      String returndata = "";
+      int[][] monthlydata = new int[31][5];
+      int[] monthlywashtypeuse = new int[5];
+	  double totalincome = 0;
+	  for(int day = 0; day < 31; day++)
+	  {
+		  for(int i = 0; i < 5; i++)
+		  {
+			  monthlydata[day][i] = 0;
+		  }
+	  }
+	  
+      for(int day = 0; day < 31; day++)
+      {
+         ArrayList<Purchase> p = dbinterface.getPurchasesDayMonthYear(day+1, month, year);
+         for(int i = 0; i < p.size(); i++)
+         {
+			totalincome += p.get(i).getWashPrice();
+            switch(p.get(i).getWashType())
+            {
+               case "earlyEconymyWash" :
+					monthlydata[day][0]++;
+					monthlywashtypeuse[0]++;
+                  break;       
+               case "earlyStandardWash" :
+					monthlydata[day][1]++;
+					monthlywashtypeuse[1]++;
+                  break;
+               case "economy" :
+					monthlydata[day][2]++;	
+					monthlywashtypeuse[2]++;					
+                  break;
+               case "standard" :
+					monthlydata[day][3]++;	
+					monthlywashtypeuse[3]++;					
+                  break;
+               case "delux" :
+					monthlydata[day][4]++;	
+					monthlywashtypeuse[4]++;					
+                  break;           
+               default:
+                  System.out.println("Unknown washtype: " + p.get(i).getWashType());   
+            }
+         }
+      }
+	  //returndata = getMonthlyRevenueData("Monthly revenue chart", "Total income this month (so far)", "revenuemonthly", "washtypesmonthlypiecanvas" );
+	  returndata = getMonthlyStatCanvas(title, incometitle, totalincome, chartid, piechartid);
+      returndata += "<script>" +
+         "var monthlyrevenue = {";
+		 
+		for(int day = 0; day < 31; day++)
+		{
+			returndata += "    '" + (day+1) +"': { 'EarlyBirdEconomy' : " + monthlydata[day][0] + ", 'EarlyBirdStandard' : " + monthlydata[day][1] + ", 'Economy' : " + monthlydata[day][2] + ", 'Standard' : " + monthlydata[day][3] + ", 'De Luxe' : " + monthlydata[day][4] + "},";
+		}
+		returndata += "    '31': { 'EarlyBirdEconomy' : " + monthlydata[30][0] + ", 'EarlyBirdStandard' : " + monthlydata[30][1] + ", 'Economy' : " + monthlydata[30][2] + ", 'Standard' : " + monthlydata[30][3] + ", 'De Luxe' : " + monthlydata[30][4] + "},";		
+         
+		 returndata += "};" +
+         "var "+chartid+"obj = new chart(" +
+         "    {" +
+         "        canvas:"+chartid+"," +
+         "        data:monthlyrevenue," +
+         "        colors:['#fde23e','#f16e23', '#57d9ff','#937e88', '#0000FF']" +
+         "    }" +
+         ");" +
+         chartid+"obj.draw();" +
+         "var piemonthlywashtypedata = {" +
+         "    'EarlyBirdEconomy': "+monthlywashtypeuse[0]+"," +
+         "    'EarlyBirdStandard': "+monthlywashtypeuse[1]+"," +
+         "    'Economy': "+monthlywashtypeuse[2]+"," +
+         "    'Standard': "+monthlywashtypeuse[3]+"," +
+         "	'De Luxe': " + monthlywashtypeuse[4] +
+         "};" +
+         "var "+piechartid+"obj = new Piechart(" +
+         "    {" +
+         "        canvas:"+piechartid+"," +
+         "        data:piemonthlywashtypedata," +
+         "        colors:['#fde23e','#f16e23', '#57d9ff','#937e88', '#0000FF']" +
+         "    }" +
+         ");" +
+         piechartid+"obj.draw();" +
+         "</script>";
+		 
+		 return(returndata);
+   }
+   
+   /**
+   We need data from the database to make this work!
+   
+   yearlyrevenue expects 'month' : {'Washtyp' ; amount} - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
+   pieyearlywashtypedata expects the different washtypes, and their amount - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
+   */   
+   private String getYearlyRevenueData()
+   {
+      String returndata = "<div style='display: inline-block'>" +
+         "	<div style='font-size: 20px; font-weight: bold;'>Last 14 month chart</div>" +
          "	<div style='float: left'>" +
          "		<canvas id='revenueyearly' width='820' height='400'></canvas>" +
          "	</div>" +
@@ -329,200 +452,72 @@ public class WashHallStatistics implements Runnable
          "		Shows the different washes: <div style='color: #fde23e; display: inline-block'>Early Bird Economy</div>, <div style='color: #f16e23; display: inline-block'>Early Bird Standard</div>, <div style='color: #57d9ff; display: inline-block'>Economy</div>, <div style='color: #937e88; display: inline-block'>Standard</div> & <div style='color: #0000FF; display: inline-block'>De luxe</div>" +
          "		. The pie chart, shows the sum of the different washtypes.	" +
          "	</div>" +
-         "</div>"  
-         );
-   }
-   
-   
-   /**
-   We need data from the database to make this work!
-   
-   monthlyrevenu expects 'day of month' : {'Washtyp' ; amount} - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
-   piemonthlywashtypedata expects the different washtypes, and their amount - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
-   */
-   private String getMonthlyRevenueData()
-   {
-      String returndata = "";
-      int[][] monthlydata = new int[31][5];
-      for(int day = 1; day < 32; day++)
-      {
-         ArrayList<Purchase> p = dbinterface.getPurchasesDayMonthYear(day, 10, 2018);
-         for(int i = 0; i < p.size(); i++)
-         {
-            switch(p.get(i).getWashType())
-            {
-               case "earlyEconymyWash" :
-                  break;       
-               case "earlyStandardWash" :
-                  break;
-               case "economy" :
-                  break;
-               case "standard" :
-                  break;
-               case "delux" :
-                  break;           
-               default:
-                  System.out.println("Unknown washtype: " + p.get(i).getWashType());   
-            }
-         }
-      }
-      return(
+         "</div>"  +	  
          "<script>" +
-         "var monthlyrevenue = {" +
-         "    '1': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10, 'Economy' : 205, 'Standard' : 30, 'De Luxe' : 2}," +
-         "    '2': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '3': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '4': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'5': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '6': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '7': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '8': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '9': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'10': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '11': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '12': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '13': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '14': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'15': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '16': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '17': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '18': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '19': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'20': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '21': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '22': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '23': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '24': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'25': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '26': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '27': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '28': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '29': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'30': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "	'31': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}" +
-         "};" +
-         "var chartmonthlydata = new chart(" +
-         "    {" +
-         "        canvas:revenuemonthly," +
-         "        data:monthlyrevenue," +
-         "        colors:['#fde23e','#f16e23', '#57d9ff','#937e88', '#0000FF']" +
-         "    }" +
-         ");" +
-         "chartmonthlydata.draw();" +
-         "var piemonthlywashtypedata = {" +
-         "    'EarlyBirdEconomy': 10," +
-         "    'EarlyBirdStandard': 14," +
-         "    'Economy': 2," +
-         "    'Standard': 12," +
-         "	'De Luxe': 1" +
-         "};" +
-         "var myPiechart = new Piechart(" +
-         "    {" +
-         "        canvas:washtypesmonthlypiecanvas," +
-         "        data:piemonthlywashtypedata," +
-         "        colors:['#fde23e','#f16e23', '#57d9ff','#937e88', '#0000FF']" +
-         "    }" +
-         ");" +
-         "myPiechart.draw();" +
-         "</script>"
-         );
-   }
-   
-   /**
-   We need data from the database to make this work!
-   
-   lastmonthrevenue expects 'day of month' : {'Washtyp' ; amount} - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
-   pielastmonthwashtypedata expects the different washtypes, and their amount - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
-   */
-   private String getLastMonthsRevenueData()
-   {
-      return(
-         "<script>" +
-         "var lastmonthrevenue = {" +
-         "    '1': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10, 'Economy' : 205, 'Standard' : 30, 'De Luxe' : 2}," +
-         "    '2': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '3': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '4': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'5': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '6': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '7': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '8': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '9': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'10': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '11': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '12': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '13': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '14': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'15': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '16': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '17': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '18': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '19': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'20': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '21': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '22': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 805}," +
-         "    '23': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '24': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'25': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    '26': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    '27': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    '28': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    '29': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'30': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "	'31': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}" +
-         "};" +
-         "var chartlastmonthdata = new chart(" +
-         "    {" +
-         "        canvas:revenuelastmonth," +
-         "        data:lastmonthrevenue," +
-         "        colors:['#fde23e','#f16e23', '#57d9ff','#937e88', '#0000FF']" +
-         "    }" +
-         ");" +
-         "chartlastmonthdata.draw();" +
-         "var pielastmonthwashtypedata = {" +
-         "   'EarlyBirdEconomy': 10," +
-         "    'EarlyBirdStandard': 74," +
-         "    'Economy': 2," +
-         "    'Standard': 12," +
-         "	'De Luxe': 50" +
-         "};" +
-         "var lastmonthwashtypes = new Piechart(" +
-         "    {" +
-         "        canvas:washtypeslastmonthpiecanvas," +
-         "        data:pielastmonthwashtypedata," +
-         "        colors:['#fde23e','#f16e23', '#57d9ff','#937e88', '#0000FF']" +
-         "    }" +
-         ");" +
-         "lastmonthwashtypes.draw()" +
-         "</script>"      
-         );
-   } 
+         "var yearlyrevenue = {";
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date());
+		c.add(Calendar.MONTH, -13);		
+		  int[][] monthlydata = new int[14][5];
+		  int[] monthlywashtypeuse = new int[5];
+		  double totalincome = 0;
+		  for(int months = 0; months < 14; months++)
+		  {
+			  for(int i = 0; i < 5; i++)
+			  {
+				  monthlydata[months][i] = 0;
+			  }
+		  }
+		String[] monthNames = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+		  for(int months = 0; months < 14; months++)
+		  {
+			 System.out.println("Date lookup" + monthNames[c.get(Calendar.MONTH)] + " " + c.get(Calendar.YEAR));
+			 ArrayList<Purchase> p = dbinterface.getPurchasesMonthYear(c.get(Calendar.MONTH)+1, c.get(Calendar.YEAR));
+			 for(int i = 0; i < p.size(); i++)
+			 {
+				totalincome += p.get(i).getWashPrice();
+				switch(p.get(i).getWashType())
+				{
+				   case "earlyEconymyWash" :
+						monthlydata[months][0]++;
+						monthlywashtypeuse[0]++;
+					  break;       
+				   case "earlyStandardWash" :
+						monthlydata[months][1]++;
+						monthlywashtypeuse[1]++;
+					  break;
+				   case "economy" :
+						monthlydata[months][2]++;	
+						monthlywashtypeuse[2]++;					
+					  break;
+				   case "standard" :
+						monthlydata[months][3]++;	
+						monthlywashtypeuse[3]++;					
+					  break;
+				   case "delux" :
+						monthlydata[months][4]++;	
+						monthlywashtypeuse[4]++;					
+					  break;           
+				   default:
+					  System.out.println("Unknown washtype: " + p.get(i).getWashType());   
+				}
+			 }
+			 c.add(Calendar.MONTH, 1);
+		  }
+		  
 
-   /**
-   We need data from the database to make this work!
-   
-   yearlyrevenue expects 'month' : {'Washtyp' ; amount} - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
-   pieyearlywashtypedata expects the different washtypes, and their amount - NOTE: The order the washtypes are in, matters! Go after  Early Bird Economy, Early Bird Standard, Economy, Standard & De luxe
-   */   
-   private String getYearlyRevenueData()
-   {
-      return(
-         "<script>" +
-         "var yearlyrevenue = {" +
-         "    'January': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10, 'Economy' : 2005, 'Standard' : 30, 'De Luxe' : 2}," +
-         "    'February': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    'March': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    'April': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'May': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 30}," +
-         "    'June': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    'July': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}," +
-         "    'August': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 20}," +
-         "    'September': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 25}," +
-         "	'October': { 'EarlyBirdEconomy' : 500, 'EarlyBirdStandard' : 3000}," +
-         "    'November': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 10}," +
-         "    'December': { 'EarlyBirdEconomy' : 5, 'EarlyBirdStandard' : 15}" +
-         "};" +
-         "var chartyearlydata = new yearlychart(" +
+
+		c.add(Calendar.MONTH, -14);			 
+		for(int months = 0; months < 13; months++)
+		{
+			returndata += "    '" + monthNames[c.get(Calendar.MONTH)] + "_" + c.get(Calendar.YEAR) + "': { 'EarlyBirdEconomy' : " + monthlydata[months][0] + ", 'EarlyBirdStandard' : " + monthlydata[months][1] + ", 'Economy' : " + monthlydata[months][2] + ", 'Standard' : " + monthlydata[months][3] + ", 'De Luxe' : " + monthlydata[months][4] + "},";
+			c.add(Calendar.MONTH, 1);
+		}
+		returndata += "    '" + monthNames[c.get(Calendar.MONTH)] + "_" + c.get(Calendar.YEAR) +"': { 'EarlyBirdEconomy' : " + monthlydata[13][0] + ", 'EarlyBirdStandard' : " + monthlydata[13][1] + ", 'Economy' : " + monthlydata[13][2] + ", 'Standard' : " + monthlydata[13][3] + ", 'De Luxe' : " + monthlydata[13][4] + "}";		
+         
+		  
+         returndata += "};" +
+		 "var chartyearlydata = new yearlychart(" +
          "    {" +
          "        canvas:revenueyearly," +
          "        data:yearlyrevenue," +
@@ -531,11 +526,11 @@ public class WashHallStatistics implements Runnable
          ");" +
          "chartyearlydata.draw();" +
          "var pieyearlywashtypedata = {" +
-         "    'EarlyBirdEconomy': 10," +
-         "    'EarlyBirdStandard': 50," +
-         "    'Economy': 2," +
-         "    'Standard': 12," +
-         "	'De Luxe': 1" +
+         "    'EarlyBirdEconomy': "+monthlywashtypeuse[0]+"," +
+         "    'EarlyBirdStandard': "+monthlywashtypeuse[1]+"," +
+         "    'Economy': "+monthlywashtypeuse[2]+"," +
+         "    'Standard': "+monthlywashtypeuse[3]+"," +
+         "	'De Luxe': " + monthlywashtypeuse[4] +
          "};" +
          "var yearlywashtypes = new Piechart(" +
          "    {" +
@@ -545,8 +540,8 @@ public class WashHallStatistics implements Runnable
          "    }" +
          ");" +
          "yearlywashtypes.draw()" +
-         "</script>"
-         );
+         "</script>";
+         return(returndata);
    }
    
    public static void main(String[] args) throws Exception
@@ -557,7 +552,7 @@ public class WashHallStatistics implements Runnable
       	// we listen until user halts server execution
          while (true) {
             //When we get a new connection we create a new Socket to talk to the client. and create an object of the type MyServerSocket
-            WashHallstatistics myServer = new WashHallstatistics(serverConnect.accept());
+            WashHallStatistics myServer = new WashHallStatistics(serverConnect.accept());
             System.out.println("Connecton opened. (" + new Date() + ")");			
          	// create a dedicated thread to manage the client connection
             Thread thread = new Thread(myServer);

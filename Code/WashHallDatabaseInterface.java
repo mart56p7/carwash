@@ -52,7 +52,25 @@ public class WashHallDatabaseInterface
 
     public ArrayList<Purchase> getPurchasesDayMonthYear(int day, int month, int year)
     {
-	ResultSet rs = querySql("select * from purchases where strftime('%d', washtimestamp) = '" + day + "' and strftime('%m', washtimestamp) = '" + month + "' and strftime('%Y', washtimestamp) = '" + year + "'");
+	String daynum = "";
+	if(day < 10)
+	{
+		daynum = "0" + Integer.toString(day);			
+	}
+	else
+	{
+		daynum = Integer.toString(day);		
+	}		
+	String monthnum = "";
+	if(month < 10)
+	{
+		monthnum = "0" + Integer.toString(month);			
+	}
+	else
+	{
+		monthnum = Integer.toString(month);		
+	}
+	ResultSet rs = querySql("select * from purchases where strftime('%d', washtimestamp) = '" + daynum + "' and strftime('%m', washtimestamp) = '" + monthnum + "' and strftime('%Y', washtimestamp) = '" + Integer.toString(year) + "'");
 	ArrayList<Purchase> purchases = new ArrayList<Purchase>();
    
 	try {
@@ -78,7 +96,16 @@ public class WashHallDatabaseInterface
     
     public ArrayList<Purchase> getPurchasesMonthYear(int month, int year)
     {
-	ResultSet rs = querySql("select * from Purchases where strftime('%m', `washtimestamp`) = " + month + " and strftime('%Y', `washtimestamp`) = " + year);
+	String monthnum = "";
+	if(month < 10)
+	{
+		monthnum = "0" + Integer.toString(month);			
+	}
+	else
+	{
+		monthnum = Integer.toString(month);		
+	}
+	ResultSet rs = querySql("select * from purchases where strftime('%m', washtimestamp) = '" + monthnum + "' and strftime('%Y', washtimestamp) = '" + Integer.toString(year) + "'");	
 	ArrayList<Purchase> purchases = new ArrayList<Purchase>();
    
 	try {
