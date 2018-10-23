@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 
 public class WashHallDatabaseInterface
 {
+    
+    Connection conn = null;
 
     public WashHallDatabaseInterface()
     {
@@ -115,15 +117,44 @@ public class WashHallDatabaseInterface
 	return loadedAccount;
     }
     
-    // public void AddPurchase(Purchase p)
-    // {
-    // 	String sql = "
-    // 	querySql("
-    // }
+    public void AddPurchase(Purchase p)
+    {
+	DateTimeFormatter formatterNew = DateTimeFormatter.ofPattern("yyyy-LL-dd HH:mm:ss");
+	String dateTime = p.getWashTimeStamp().format(formatterNew).toString();
+	// p.getWashTimeStamp().toString();
+
+    	String purchaseString = 
+	    Integer.toString(p.getAccountId()) + ", " + 
+	    "\"" + p.getWashType() + "\"" + ", " + 
+	    Double.toString(p.getWashPrice()) + ", " + 
+	    "\"" + dateTime + "\"";
+    	String sql = "insert into purchases (accountId, washtype, washprice, washtimestamp) values  (" + purchaseString + ");";
+	// System.out.println(sql);
+
+	executeSql(sql);
+    }
+    
+    void executeSql(String sql)
+    {
+	// Connection conn = null;
+	PreparedStatement pstmt = null;
+	
+	try {
+	    conn = DriverManager.getConnection("jdbc:sqlite:testdb.db");
+	    System.out.println("succesfully opened database");
+
+	    pstmt = conn.prepareStatement(sql);
+	    pstmt.executeUpdate();
+	} 
+	catch (Exception e) {
+	    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    System.exit(0);
+	} 
+    }
 
     ResultSet querySql(String sql)
     {
-	Connection conn = null;
+	// Connection conn = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	
