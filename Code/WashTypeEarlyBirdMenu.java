@@ -19,12 +19,12 @@ public class WashTypeEarlyBirdMenu extends JPanel
       this.setLayout(null);
       String balancelabeltext = "";
       if (gui.getWashHallManager().getAccount() == null){
-      balancelabeltext = "Balance XMAN2"; }
+      balancelabeltext = "Balance 0"; }
       else {
       balancelabeltext = "Balance " +gui.getWashHallManager().getAccount().getBalance();
       }
    	//Creates a Label
-      JLabel balancelabel = new JLabel(balancelabeltext);
+      balancelabel = new JLabel(balancelabeltext);
    	//Sets our label font
       balancelabel.setFont(gui.getFontMedium());
    	//Calculate the size of the text in the label
@@ -123,7 +123,7 @@ public class WashTypeEarlyBirdMenu extends JPanel
       {
       String balancelabeltext = "";
       if (gui.getWashHallManager().getAccount() == null){
-      balancelabeltext = "Balance XMAN"; }
+      balancelabeltext = "Balance 0"; }
       else {
       balancelabeltext = "Balance " +gui.getWashHallManager().getAccount().getBalance();
       }

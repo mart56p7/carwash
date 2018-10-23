@@ -5,8 +5,8 @@ public class Printer
    
    }
    
-   public void print(Sale sale)
+   public void printReceipt(Purchase purchase)
    {
-      System.out.println("Printing sale timestamp: " + sale.getTime() + " WashType: " + sale.getWashType() + " Price: " + sale.getPrice() + " AccountId: " + sale.getAccountId());
+      System.out.println("Printing sale timestamp: " + purchase.getWashTimeStamp() + " WashType: " + purchase.getWashType() + " Price: " + purchase.getWashPrice() + " AccountId: " + purchase.getAccountId());
    }
 }
