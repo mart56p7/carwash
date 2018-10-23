@@ -36,7 +36,6 @@ public class WashHallDatabaseInterface
 
     public ArrayList<Integer> testConnection()
     {
-
 	ResultSet rs = querySql("select * from accounts");
 	ArrayList<Integer> accounts = new ArrayList<Integer>();
 
@@ -49,7 +48,6 @@ public class WashHallDatabaseInterface
 	}
 
 	return accounts;
-
     }
     
     public ArrayList<Purchase> getPurchases()
@@ -77,6 +75,51 @@ public class WashHallDatabaseInterface
 
 	return purchases;
     }
+    
+    public ArrayList<Purchase> getPurchasesMonthYear(int month, int year)
+    {
+	ResultSet rs = querySql("select * from Purchases where month(washtimestamp) = " + month + " and year(washtimestamp) = " + year);
+	ArrayList<Purchase> purchases = new ArrayList<Purchase>();
+	
+	try {
+	    while(rs.next()) {
+		DateTimeFormatter formatterNew = DateTimeFormatter.ofPattern("yyyy-LL-dd HH:mm:ss");
+		LocalDateTime d = LocalDateTime.parse(rs.getString("washtimestamp"), formatterNew);
+		System.out.println(d.toString());
+
+		Purchase p = new Purchase(rs.getInt("id"),
+					  rs.getInt("accountId"),
+					  rs.getString("washType"),
+					  rs.getDouble("washPrice"),
+					  d);
+		purchases.add(p);
+	    }
+	} catch(Exception e) {
+	    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    System.exit(0);
+	}
+
+	return purchases;
+    }
+    
+    public Account getAccount(int id)
+    {
+	ResultSet rs = querySql("select * from accounts where id = " + Integer.toString(id));
+	Account loadedAccount = null;
+	try {
+	    loadedAccount = new Account(rs.getInt("Id"), rs.getDouble("Balance"));
+	} catch(Exception e) {
+	    System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	    System.exit(0);
+	}
+	return loadedAccount;
+    }
+    
+    // public void AddPurchase(Purchase p)
+    // {
+    // 	String sql = "
+    // 	querySql("
+    // }
 
     ResultSet querySql(String sql)
     {
