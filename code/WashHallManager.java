@@ -205,7 +205,7 @@ class WashHallManager
 
     public Account getAccount()
     {
-        //System.out.println("returning account");
+        // System.out.println("returning account");
         return currentAccount;
     }
 
