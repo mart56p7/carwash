@@ -1,7 +1,7 @@
 public class Terminal
 {
-    public static void main(String[] args)
-    {
-        new WashHallGUI();
-    }
+   public static void main(String[] args)
+   {
+      new WashHallGUI();
+   }
 }

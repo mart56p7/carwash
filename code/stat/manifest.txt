@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Created-By: Bundle
+Class-Path: ./sqlite-jdbc-3.23.1.jar
+Main-Class: WashHallStatistics
